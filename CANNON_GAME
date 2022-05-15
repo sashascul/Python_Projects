@@ -22,12 +22,7 @@ WIDTH = 800
 HEIGHT = 600
 
 class Ball:
-    def __init__(self, screen: pygame.Surface, x=40, y=450):
-        """ Конструктор класса ball
-        Args:
-        x - начальное положение мяча по горизонтали
-        y - начальное положение мяча по вертикали
-        """
+    def __init__(self, screen: pygame.Surface, x = 40, y = 450):
         self.screen = screen
         self.x = x
         self.y = y
@@ -38,44 +33,27 @@ class Ball:
         self.live = 10
 
     def move(self):
-        """Переместить мяч по прошествии единицы времени.
-        Метод описывает перемещение мяча за один кадр перерисовки. То есть, обновляет значения
-        self.x и self.y с учетом скоростей self.vx и self.vy, силы гравитации, действующей на мяч,
-        и стен по краям окна (размер окна 800х600).
-        """
-        # FIXME
         self.x += self.vx
         self.y += self.vy
         self.vy += 4
         x = self.x
         y = self.y
         r = self.r
-        if x+r>=800:
-            self.vx*=-1
-            self.x=self.x+2*self.vx
-        if x-r<=0:
-            self.vx*=-1
-            self.x+=2*self.vx
-        if y+r>=600:
-            self.vy*=-0.8
+        if x + r >=800:
+            self.vx *= -1
+            self.x = self.x+2 * self.vx
+        if x - r <=0:
+            self.vx *= -1
+            self.x += 2 * self.vx
+        if y + r >= 600:
+            self.vy *= -0.8
             self.live -= 1
         
 
     def draw(self):
-        pygame.draw.circle(
-            self.screen,
-            self.color,
-            (self.x, self.y),
-            self.r
-        )
+        pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.r)
 
     def hittest(self, obj):
-        """Функция проверяет сталкивалкивается ли данный обьект с целью, описываемой в обьекте obj.
-        Args:
-            obj: Обьект, с которым проверяется столкновение.
-        Returns:
-            Возвращает True в случае столкновения мяча и цели. В противном случае возвращает False.
-        """
         da = self.x - obj.x
         db = self.y - obj.y
         ddc = da*da + db*db
@@ -84,10 +62,6 @@ class Ball:
         if ddc <= dc:
             return True
         return False
-        
-        # FIXME
-
-
 class Gun:
     def __init__(self, screen):
         self.screen = screen
@@ -100,14 +74,10 @@ class Gun:
         self.f2_on = 1
 
     def fire2_end(self, event):
-        """Выстрел мячом.
-        Происходит при отпускании кнопки мыши.
-        Начальные значения компонент скорости мяча vx и vy зависят от положения мыши.
-        """
         global balls
         new_ball = Ball(self.screen)
         new_ball.r += 5
-        self.an = math.atan2((event.pos[1]-new_ball.y), (event.pos[0]-new_ball.x))
+        self.an = math.atan2((event.pos[1] - new_ball.y), (event.pos[0] - new_ball.x))
         new_ball.vx = self.f2_power * math.cos(self.an)
         new_ball.vy = self.f2_power * math.sin(self.an)
         balls.append(new_ball)
@@ -115,9 +85,8 @@ class Gun:
         self.f2_power = 10
 
     def targetting(self, event):
-        """Прицеливание. Зависит от положения мыши."""
         if event:
-            self.an = math.atan((event.pos[1]-450) / (event.pos[0]-20))
+            self.an = math.atan((event.pos[1] - 450) / (event.pos[0] - 20))
         if self.f2_on:
             self.color = BLUE
         else:
@@ -129,9 +98,9 @@ class Gun:
         x0, y0 = 20, 450
         d = self.f2_power
         g = 8
-        x1, y1 = 20+d*cos, 450+d*sin
-        x2, y2 = 20+sin*g, 450-g*cos
-        x3, y3 = x1+sin*g, y1-g*cos
+        x1, y1 = 20+d * cos, 450 + d * sin
+        x2, y2 = 20 + sin * g, 450 - g * cos
+        x3, y3 = x1 + sin * g, y1 - g * cos
         gg = [(x0,y0),(x1,y1),(x3,y3),(x2,y2)]
         
         pygame.draw.polygon(screen, self.color, gg)
@@ -151,13 +120,8 @@ class Target:
     def __init__(self):
         self.live = 1
         self.new_target()
-    # self.points = 0
-    # self.live = 1
-    # FIXME: don't work!!! How to call this functions when object is created?
-    # self.new_target()
 
     def new_target(self):
-        """ Инициализация новой цели. """
         x = self.x = rnd(600, 750)
         y = self.y = rnd(300, 550)
         r = self.r = rnd(10, 50)
@@ -173,15 +137,15 @@ class Target:
     def move(self):
         x, y, vx, vy = self.x, self.y, self.vx, self.vy
         r = self.r
-        x+=vx
-        y+=vy
-        if x+r+vx>801:
-            vx*=-1
-        if x-r+vx<499:
-            vx*=-1
-        if y+r+vy>601:
-            vy*=-1
-        if y-r+vy<249:
+        x += vx
+        y += vy
+        if x + r + vx > 801:
+            vx *= -1
+        if x - r + vx < 499:
+            vx *= -1
+        if y + r + vy > 601:
+            vy *= -1
+        if y - r + vy < 249:
             vy*=-1
         self.x, self.y, self.vx, self.vy = x, y, vx, vy
             
@@ -207,7 +171,7 @@ while not finished:
         if b.live >= 1:
             b.draw()
     f2 = pygame.font.Font(None, 50)
-    text2 = f2.render("Your score: " + str(bullet), True, (40,50 , 150), (0, 0, 0))
+    text2 = f2.render("Your score: " + str(bullet), True, (40, 50, 150), (0, 0, 0))
     screen.blit(text2, (0, 0))               
     pygame.display.update()
     
